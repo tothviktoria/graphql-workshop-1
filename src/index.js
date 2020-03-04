@@ -11,6 +11,8 @@ const typeDefs = gql`
 
   type Mutation {
     createUser(data: CreateUserInput!): User!
+    createPost(data: CreatePostInput!): Post!
+    createComment(data: CreateCommentInput!): Comment!
   }
 
   input CreateUserInput {
@@ -18,6 +20,21 @@ const typeDefs = gql`
     email: String!
     age: Int
     id: ID!
+  }
+
+  input CreatePostInput {
+    id: ID!
+    title: String!
+    body: String!
+    published: Boolean!
+    author: ID!
+  }
+
+  input CreateCommentInput {
+    id: ID!
+    text: String!
+    post: ID!
+    author: ID!
   }
 
   type User {
@@ -67,6 +84,43 @@ const resolvers = {
       };
       db.users.push(newUser);
       return newUser;
+    },
+    createPost(_, { data }) {
+      try {
+        const author = db.users.find(user => user.id === data.author);
+        if (!author) {
+          throw new Error(`No user found for ID ${data.author}`);
+        }
+        const newPost = {
+          id: data.id,
+          title: data.title,
+          body: data.body,
+          published: data.published,
+          author: data.author
+        };
+        db.posts.push(newPost);
+        return newPost;
+      } catch (err) {
+        console.log(err);
+      }
+    },
+    createComment(_, { data }) {
+      const author = db.users.find(user => user.id === data.author);
+      if (!author) {
+        throw new Error(`No user found for ID ${data.author}`);
+      }
+      const post = db.posts.find(post => post.id === data.post);
+      if (!post) {
+        throw new Error(`No post found for ID ${data.post}`);
+      }
+      const newComment = {
+        id: data.id,
+        text: data.text,
+        post: data.post,
+        author: data.author
+      };
+      db.comments.push(newComment);
+      return newComment;
     }
   },
 
