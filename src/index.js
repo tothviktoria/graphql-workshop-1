@@ -37,8 +37,8 @@ const resolvers = {
   },
 
   Post: {
-    author(parent) {
-      return db.users.find(user => user.id === parent.author);
+    author(post) {
+      return db.users.find(user => user.id === post.author);
     }
   }
 };

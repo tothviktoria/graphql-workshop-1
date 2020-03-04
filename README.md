@@ -18,7 +18,7 @@
 6. Create a new type, `Comment` with fields `id`, `text`, `post` and `author`
 7. Add some fake comment data to the database file
 8. Add resolvers for the necessary fields on the `Comment` type
-9. Add comment fields to `Author` and `Post` and add the required resolvers
+9. Add comment fields to `User` and `Post` and add the required resolvers
 10. Make some queries for your new types
 
 # Part 2
