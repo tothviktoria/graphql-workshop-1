@@ -31,4 +31,6 @@
 
 # Part 3
 
-1.
+1. Try subscribing to the `post` subscription and then creating a new post.
+2. Create a subscription `comment` that takes an argument `postId` which will notify of a new comment published for a given post. Remember, you can pass any string into the PubSub `asyncIterator` function, so you can pass the `postId` in there.
+3. Try subscribing to your new `comment` subscription for one of your posts. Then create a comment for it.
