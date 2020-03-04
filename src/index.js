@@ -1,5 +1,5 @@
-import { GraphQLServer, gql } from "graphql-yoga";
-import db from "./db";
+import { GraphQLServer } from "graphql-yoga";
+import gql from "graphql-tag";
 
 const typeDefs = gql`
   type Query {
