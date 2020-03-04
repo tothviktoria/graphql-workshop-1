@@ -1,4 +1,4 @@
-import { GraphQLServer } from "graphql-yoga";
+import { GraphQLServer, PubSub } from "graphql-yoga";
 import gql from "graphql-tag";
 
 import db from "./db";
@@ -13,6 +13,10 @@ const typeDefs = gql`
     createUser(data: CreateUserInput!): User!
     createPost(data: CreatePostInput!): Post!
     createComment(data: CreateCommentInput!): Comment!
+  }
+
+  type Subscription {
+    post: Post!
   }
 
   input CreateUserInput {
@@ -86,23 +90,20 @@ const resolvers = {
       return newUser;
     },
     createPost(_, { data }) {
-      try {
-        const author = db.users.find(user => user.id === data.author);
-        if (!author) {
-          throw new Error(`No user found for ID ${data.author}`);
-        }
-        const newPost = {
-          id: data.id,
-          title: data.title,
-          body: data.body,
-          published: data.published,
-          author: data.author
-        };
-        db.posts.push(newPost);
-        return newPost;
-      } catch (err) {
-        console.log(err);
+      const author = db.users.find(user => user.id === data.author);
+      if (!author) {
+        throw new Error(`No user found for ID ${data.author}`);
       }
+      const newPost = {
+        id: data.id,
+        title: data.title,
+        body: data.body,
+        published: data.published,
+        author: data.author
+      };
+      db.posts.push(newPost);
+      pubsub.publish("post", { post: newPost });
+      return newPost;
     },
     createComment(_, { data }) {
       const author = db.users.find(user => user.id === data.author);
@@ -121,6 +122,14 @@ const resolvers = {
       };
       db.comments.push(newComment);
       return newComment;
+    }
+  },
+
+  Subscription: {
+    post: {
+      subscribe(_, __, { pubsub }) {
+        return pubsub.asyncIterator("post");
+      }
     }
   },
 
@@ -152,9 +161,14 @@ const resolvers = {
   }
 };
 
+const pubsub = new PubSub();
+
 const server = new GraphQLServer({
   typeDefs,
-  resolvers
+  resolvers,
+  context: {
+    pubsub
+  }
 });
 
 server.start(() => {
