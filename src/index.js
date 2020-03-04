@@ -9,6 +9,17 @@ const typeDefs = gql`
     posts: [Post!]!
   }
 
+  type Mutation {
+    createUser(data: CreateUserInput): User!
+  }
+
+  input CreateUserInput {
+    name: String!
+    email: String!
+    age: Int
+    id: ID!
+  }
+
   type User {
     name: String!
     email: String!
@@ -33,6 +44,19 @@ const resolvers = {
 
     posts() {
       return db.posts;
+    }
+  },
+
+  Mutation: {
+    createUser(parent, { data }) {
+      const newUser = {
+        id: data.id,
+        name: data.name,
+        age: data.age,
+        email: data.email
+      };
+      db.users.push(newUser);
+      return newUser;
     }
   },
 
