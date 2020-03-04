@@ -20,7 +20,7 @@ const typeDefs = gql`
     title: String!
     body: String!
     id: ID!
-    published: Boolean
+    published: Boolean!
     author: User!
   }
 `;
