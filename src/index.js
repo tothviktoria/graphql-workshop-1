@@ -1,6 +1,8 @@
 import { GraphQLServer } from "graphql-yoga";
 import gql from "graphql-tag";
 
+import db from "./db";
+
 const typeDefs = gql`
   type Query {
     users: [User!]!
