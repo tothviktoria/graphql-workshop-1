@@ -39,6 +39,26 @@ const db = {
       published: false,
       author: "2"
     }
+  ],
+  comments: [
+    {
+      id: "1",
+      text: "Here is a comment",
+      post: "2",
+      author: "3"
+    },
+    {
+      id: "2",
+      text: "This post is great!",
+      post: "2",
+      author: "1"
+    },
+    {
+      id: "3",
+      text: "Not very good",
+      post: "3",
+      author: "2"
+    }
   ]
 };
 
