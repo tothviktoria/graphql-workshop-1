@@ -6,7 +6,13 @@ import db from "./db";
 const typeDefs = gql`
   type Query {
     users: [User!]!
+    user(id: ID!): User
     posts: [Post!]!
+    comments: [Comment!]!
+  }
+
+  type Mutation {
+    createUser(id: ID!, name: String!, email: String!, age: Int): User!
   }
 
   type User {
@@ -14,6 +20,8 @@ const typeDefs = gql`
     email: String!
     age: Int
     id: ID!
+    posts: [Post!]!
+    comment: [Comment!]!
   }
 
   type Post {
@@ -21,6 +29,13 @@ const typeDefs = gql`
     body: String!
     id: ID!
     published: Boolean!
+    author: User!
+    comment: [Comment!]!
+  }
+  type Comment {
+    id: ID!
+    text: String!
+    post: Post!
     author: User!
   }
 `;
@@ -30,15 +45,46 @@ const resolvers = {
     users() {
       return db.users;
     },
+    user(_, args) {
+      return db.user.find(user => user.id === args.id);
+    },
 
     posts() {
       return db.posts;
+    },
+    comments() {
+      return db.comments;
+    }
+  },
+  Mutation: {
+    createUser(_, args) {
+      const newUser = {
+        id: args.id,
+        name: args.name,
+        email: args.email,
+        age: args.age
+      };
+      db.users.push(newUser);
+      return newUser;
     }
   },
 
   Post: {
     author(post) {
       return db.users.find(user => user.id === post.author);
+    }
+  },
+  User: {
+    posts(user) {
+      return db.posts.find(post => user.id === post.author);
+    }
+  },
+  Comment: {
+    author(comment) {
+      return db.users.find(user => user.id === comment.author);
+    },
+    post(comment) {
+      return db.post.find(post => post.id === comment.post);
     }
   }
 };

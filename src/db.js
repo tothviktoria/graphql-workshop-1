@@ -39,6 +39,15 @@ const db = {
       published: false,
       author: "2"
     }
+  ],
+
+  comments: [
+    {
+      id: "1",
+      text: " this was a good blog",
+      post: "2",
+      author: "2"
+    }
   ]
 };
 
