@@ -18,10 +18,9 @@ const typeDefs = gql`
       body: String!
       id: ID!
       published: Boolean!
-      author: User!
-      comment: [Comment!]
+      author: ID!
     ): Post!
-    createComment(id: ID!, text: String!, post: Post!, author: User!): Comment!
+    createComment(id: ID!, text: String!, post: ID!, author: ID!): Comment!
   }
 
   type User {
