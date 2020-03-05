@@ -13,6 +13,15 @@ const typeDefs = gql`
 
   type Mutation {
     createUser(id: ID!, name: String!, email: String!, age: Int): User!
+    createPost(
+      title: String!
+      body: String!
+      id: ID!
+      published: Boolean!
+      author: User!
+      comment: [Comment!]
+    ): Post!
+    createComment(id: ID!, text: String!, post: Post!, author: User!): Comment!
   }
 
   type User {
@@ -66,6 +75,26 @@ const resolvers = {
       };
       db.users.push(newUser);
       return newUser;
+    },
+    createPost(_, args) {
+      const newPost = {
+        id: args.id,
+        body: args.body,
+        published: args.published,
+        author: args.author,
+        comment: args.comment
+      };
+      db.posts.push(newPost);
+      return newPost;
+    },
+    createComment(_, args) {
+      const newComment = {
+        text: args.text,
+        post: args.post,
+        author: args.author
+      };
+      db.comments.push(newComment);
+      return newComment;
     }
   },
 
